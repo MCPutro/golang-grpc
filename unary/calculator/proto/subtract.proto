@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "go-grpc-example2/unary/calculator/proto";
+
+message subtractRequest{
+  double varA = 1;
+  double varB = 2;
+}
+
+message subtractResponse{
+  double result = 1;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "go-grpc-example2/unary/calculator/proto";
+
+message addRequest{
+  double varA = 1;
+  double varB = 2;
+}
+
+message addResponse{
+  double result = 1;
+}

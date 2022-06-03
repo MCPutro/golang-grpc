@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "go-grpc-example2/client_streaming/greet/proto";
+
+message GreetingReq{
+  string firstName = 1;
+  string lastName = 2;
+}
+
+message GreetingResp{
+  string msg = 1;
+}
+
+service Greeting{
+  rpc GreetingAll(stream GreetingReq) returns (GreetingResp);
+}

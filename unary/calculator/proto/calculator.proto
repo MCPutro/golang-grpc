@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "go-grpc-example2/unary/calculator/proto";
+
+import "add.proto";
+import "subtract.proto";
+import "multiply.proto";
+import "divide.proto";
+
+service calculatorOperation{
+  rpc add(addRequest) returns (addResponse);
+  rpc subtract(subtractRequest) returns (subtractResponse);
+  rpc multiply(multiplyRequest) returns (multiplyResponse);
+  rpc divide(divideRequest) returns (divideResponse);
+}

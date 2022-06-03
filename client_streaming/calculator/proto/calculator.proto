@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "go-grpc-example2/client_streaming/calculator/proto";
+
+message AverageReq{
+  double number = 1;
+}
+
+message AverageResp{
+  double result = 1;
+  double sum = 2;
+  uint32 n = 3;
+}
+
+service calculatorOperation{
+  rpc Average(stream AverageReq) returns (AverageResp);
+}

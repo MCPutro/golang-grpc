@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package greet;
+//option go_package = "./proto";
+option go_package = "go-grpc-example2/unary/greeting/proto";
+
+message Greeting{
+  string firstName = 1;
+  string lastName = 2;
+}
+
+message GreetRequest{
+  Greeting greeting = 1;
+}
+
+message GreetingResponse{
+  string result = 1;
+}
+
+
+service GreetingService{
+  rpc Greet(GreetRequest) returns (GreetingResponse){}; //declare function
+
+
+}
