@@ -6,6 +6,7 @@ import (
 	"go-grpc-example2/unary/greeting/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"net"
 	"sync"
@@ -57,6 +58,9 @@ func main() {
 	s := grpc.NewServer()
 
 	proto.RegisterGreetingServiceServer(s, &server{})
+	// mengaktifkan reflection
+	// agar bisa digunakan untuk pengujian dengan evans
+	reflection.Register(s)
 
 	err = s.Serve(listen)
 	if err != nil {

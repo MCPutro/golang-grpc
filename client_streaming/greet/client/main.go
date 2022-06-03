@@ -50,5 +50,5 @@ func main() {
 		log.Fatalf("errer client stream while receiving response, err: %v", err)
 	}
 
-	fmt.Println(resp)
+	fmt.Println(resp.Msg)
 }
