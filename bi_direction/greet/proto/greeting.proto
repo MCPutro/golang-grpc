@@ -4,19 +4,19 @@ package proto;
 option go_package = "go-grpc-example2/bi_direction/greet/proto";
 
 
-message Greeting{
+message Greet{
   string firstName = 1;
   string lastName = 2;
 }
 
 message GreetRequest{
-  Greeting greeting = 1;
+  Greet greeting = 1;
 }
 
-message GreetingResponse{
+message GreetResponse{
   string msg = 1;
 }
 
-service GreetingBiDirection{
-  rpc GreetEveryone(stream GreetRequest) returns (stream GreetingResponse);
+service GreetBiDirection{
+  rpc GreetEveryone(stream GreetRequest) returns (stream GreetResponse);
 }

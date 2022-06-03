@@ -18,99 +18,99 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// GreetingBiDirectionClient is the client API for GreetingBiDirection service.
+// GreetBiDirectionClient is the client API for GreetBiDirection service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreetingBiDirectionClient interface {
-	GreetEveryone(ctx context.Context, opts ...grpc.CallOption) (GreetingBiDirection_GreetEveryoneClient, error)
+type GreetBiDirectionClient interface {
+	GreetEveryone(ctx context.Context, opts ...grpc.CallOption) (GreetBiDirection_GreetEveryoneClient, error)
 }
 
-type greetingBiDirectionClient struct {
+type greetBiDirectionClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreetingBiDirectionClient(cc grpc.ClientConnInterface) GreetingBiDirectionClient {
-	return &greetingBiDirectionClient{cc}
+func NewGreetBiDirectionClient(cc grpc.ClientConnInterface) GreetBiDirectionClient {
+	return &greetBiDirectionClient{cc}
 }
 
-func (c *greetingBiDirectionClient) GreetEveryone(ctx context.Context, opts ...grpc.CallOption) (GreetingBiDirection_GreetEveryoneClient, error) {
-	stream, err := c.cc.NewStream(ctx, &GreetingBiDirection_ServiceDesc.Streams[0], "/proto.GreetingBiDirection/GreetEveryone", opts...)
+func (c *greetBiDirectionClient) GreetEveryone(ctx context.Context, opts ...grpc.CallOption) (GreetBiDirection_GreetEveryoneClient, error) {
+	stream, err := c.cc.NewStream(ctx, &GreetBiDirection_ServiceDesc.Streams[0], "/proto.GreetBiDirection/GreetEveryone", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &greetingBiDirectionGreetEveryoneClient{stream}
+	x := &greetBiDirectionGreetEveryoneClient{stream}
 	return x, nil
 }
 
-type GreetingBiDirection_GreetEveryoneClient interface {
+type GreetBiDirection_GreetEveryoneClient interface {
 	Send(*GreetRequest) error
-	Recv() (*GreetingResponse, error)
+	Recv() (*GreetResponse, error)
 	grpc.ClientStream
 }
 
-type greetingBiDirectionGreetEveryoneClient struct {
+type greetBiDirectionGreetEveryoneClient struct {
 	grpc.ClientStream
 }
 
-func (x *greetingBiDirectionGreetEveryoneClient) Send(m *GreetRequest) error {
+func (x *greetBiDirectionGreetEveryoneClient) Send(m *GreetRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *greetingBiDirectionGreetEveryoneClient) Recv() (*GreetingResponse, error) {
-	m := new(GreetingResponse)
+func (x *greetBiDirectionGreetEveryoneClient) Recv() (*GreetResponse, error) {
+	m := new(GreetResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-// GreetingBiDirectionServer is the server API for GreetingBiDirection service.
-// All implementations must embed UnimplementedGreetingBiDirectionServer
+// GreetBiDirectionServer is the server API for GreetBiDirection service.
+// All implementations must embed UnimplementedGreetBiDirectionServer
 // for forward compatibility
-type GreetingBiDirectionServer interface {
-	GreetEveryone(GreetingBiDirection_GreetEveryoneServer) error
-	mustEmbedUnimplementedGreetingBiDirectionServer()
+type GreetBiDirectionServer interface {
+	GreetEveryone(GreetBiDirection_GreetEveryoneServer) error
+	mustEmbedUnimplementedGreetBiDirectionServer()
 }
 
-// UnimplementedGreetingBiDirectionServer must be embedded to have forward compatible implementations.
-type UnimplementedGreetingBiDirectionServer struct {
+// UnimplementedGreetBiDirectionServer must be embedded to have forward compatible implementations.
+type UnimplementedGreetBiDirectionServer struct {
 }
 
-func (UnimplementedGreetingBiDirectionServer) GreetEveryone(GreetingBiDirection_GreetEveryoneServer) error {
+func (UnimplementedGreetBiDirectionServer) GreetEveryone(GreetBiDirection_GreetEveryoneServer) error {
 	return status.Errorf(codes.Unimplemented, "method GreetEveryone not implemented")
 }
-func (UnimplementedGreetingBiDirectionServer) mustEmbedUnimplementedGreetingBiDirectionServer() {}
+func (UnimplementedGreetBiDirectionServer) mustEmbedUnimplementedGreetBiDirectionServer() {}
 
-// UnsafeGreetingBiDirectionServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreetingBiDirectionServer will
+// UnsafeGreetBiDirectionServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GreetBiDirectionServer will
 // result in compilation errors.
-type UnsafeGreetingBiDirectionServer interface {
-	mustEmbedUnimplementedGreetingBiDirectionServer()
+type UnsafeGreetBiDirectionServer interface {
+	mustEmbedUnimplementedGreetBiDirectionServer()
 }
 
-func RegisterGreetingBiDirectionServer(s grpc.ServiceRegistrar, srv GreetingBiDirectionServer) {
-	s.RegisterService(&GreetingBiDirection_ServiceDesc, srv)
+func RegisterGreetBiDirectionServer(s grpc.ServiceRegistrar, srv GreetBiDirectionServer) {
+	s.RegisterService(&GreetBiDirection_ServiceDesc, srv)
 }
 
-func _GreetingBiDirection_GreetEveryone_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(GreetingBiDirectionServer).GreetEveryone(&greetingBiDirectionGreetEveryoneServer{stream})
+func _GreetBiDirection_GreetEveryone_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(GreetBiDirectionServer).GreetEveryone(&greetBiDirectionGreetEveryoneServer{stream})
 }
 
-type GreetingBiDirection_GreetEveryoneServer interface {
-	Send(*GreetingResponse) error
+type GreetBiDirection_GreetEveryoneServer interface {
+	Send(*GreetResponse) error
 	Recv() (*GreetRequest, error)
 	grpc.ServerStream
 }
 
-type greetingBiDirectionGreetEveryoneServer struct {
+type greetBiDirectionGreetEveryoneServer struct {
 	grpc.ServerStream
 }
 
-func (x *greetingBiDirectionGreetEveryoneServer) Send(m *GreetingResponse) error {
+func (x *greetBiDirectionGreetEveryoneServer) Send(m *GreetResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *greetingBiDirectionGreetEveryoneServer) Recv() (*GreetRequest, error) {
+func (x *greetBiDirectionGreetEveryoneServer) Recv() (*GreetRequest, error) {
 	m := new(GreetRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -118,17 +118,17 @@ func (x *greetingBiDirectionGreetEveryoneServer) Recv() (*GreetRequest, error) {
 	return m, nil
 }
 
-// GreetingBiDirection_ServiceDesc is the grpc.ServiceDesc for GreetingBiDirection service.
+// GreetBiDirection_ServiceDesc is the grpc.ServiceDesc for GreetBiDirection service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var GreetingBiDirection_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.GreetingBiDirection",
-	HandlerType: (*GreetingBiDirectionServer)(nil),
+var GreetBiDirection_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.GreetBiDirection",
+	HandlerType: (*GreetBiDirectionServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "GreetEveryone",
-			Handler:       _GreetingBiDirection_GreetEveryone_Handler,
+			Handler:       _GreetBiDirection_GreetEveryone_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
