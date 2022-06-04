@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-grpc-example2/example_case/blog/proto"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -53,8 +54,28 @@ func (s *server) CreateBlog(ctx context.Context, in *proto.Blog) (*proto.BlogId,
 }
 
 func (s *server) ReadBlog(ctx context.Context, id *proto.BlogId) (*proto.Blog, error) {
-	//TODO implement me
-	panic("implement me")
+	fmt.Println("read from mongo")
+
+	idFromHex, err := primitive.ObjectIDFromHex(id.Id)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			"Cannot parse ID",
+		)
+	}
+
+	tmp := &BlogItem{}
+	filter := bson.M{"_id": idFromHex}
+
+	result := s.Collection.FindOne(ctx, filter)
+	if err2 := result.Decode(tmp); err2 != nil {
+		return nil, status.Errorf(
+			codes.NotFound,
+			fmt.Sprintf("id %v not found, error : %v", idFromHex, err2))
+	}
+
+	return documentToBlog(tmp), nil
+
 }
 
 func (s *server) UpdateBlog(ctx context.Context, blog *proto.Blog) (*emptypb.Empty, error) {

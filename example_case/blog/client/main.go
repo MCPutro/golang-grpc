@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"go-grpc-example2/example_case/blog/proto"
 	"google.golang.org/grpc"
 	"log"
@@ -22,17 +21,31 @@ func main() {
 
 	client := proto.NewBlogServiceClient(conn)
 
-	fmt.Println(createBlog(client))
+	blogId := createBlog(client)
+	findById(client, blogId)
+}
 
+func findById(c proto.BlogServiceClient, id string) *proto.Blog {
+	log.Println("---readBlog was invoked---")
+
+	req := &proto.BlogId{Id: id}
+	res, err := c.ReadBlog(context.Background(), req)
+
+	if err != nil {
+		log.Fatalf("Error happened while reading: %v\n", err)
+	}
+
+	log.Printf("Blog was read: %v\n", res)
+	return res
 }
 
 func createBlog(c proto.BlogServiceClient) string {
 	log.Println("---createBlog was invoked---")
 
 	blog := &proto.Blog{
-		AuthorId: "Clement",
-		Title:    "My First Blog",
-		Content:  "Content of the first blog",
+		AuthorId: "ok ok",
+		Title:    "test insert",
+		Content:  "ha ha ha",
 	}
 
 	res, err := c.CreateBlog(context.Background(), blog)
