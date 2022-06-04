@@ -30,7 +30,7 @@ endif
 
 .DEFAULT_GOAL := help
 .PHONY: greet blog calculator help
-project := unary-greeting unary-calculator client_streaming-calculator client_streaming-greet server_streaming-greeting server_streaming-calculator bi_direction-greet
+project := unary-greeting unary-calculator client_streaming-calculator client_streaming-greet server_streaming-greeting server_streaming-calculator bi_direction-greet example_case-blog
 
 #all: $(project) ## Generate Pbs and build
 
@@ -41,6 +41,7 @@ client_streaming-greet: $@ ## Generate Pbs and build for client_streaming-greet
 server_streaming-greeting: $@ ## Generate Pbs and build for server_streaming-greeting
 server_streaming-calculator: $@ ## Generate Pbs and build for server_streaming-calculator
 bi_direction-greet: $@ ## Generate Pbs and build for bi_direction-greet
+example_case-blog: $@ ## Generate Pbs and build for example_case-blog
 
 $(project):
 #	@${CHECK_DIR_CMD}
