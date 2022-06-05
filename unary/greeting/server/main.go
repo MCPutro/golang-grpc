@@ -33,7 +33,7 @@ func (s *server) Greet(ctx context.Context, in *proto.GreetRequest) (*proto.Gree
 		fmt.Println("time out")
 		return nil, status.Errorf(
 			codes.DeadlineExceeded,
-			fmt.Sprintf("Cannot devide by"),
+			fmt.Sprintf("deadline/timeout"),
 		)
 	} else {
 		fmt.Println("gak time out")

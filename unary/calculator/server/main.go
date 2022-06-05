@@ -76,14 +76,14 @@ func main() {
 	if tls {
 		certFile := "ssl/server.crt"
 		keyFile := "ssl/server.pem"
-		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+		cred, err := credentials.NewServerTLSFromFile(certFile, keyFile)
 
 		if err != nil {
 			log.Fatalf("failed load cert %v", err)
 			return
 		}
 
-		opt = append(opt, grpc.Creds(creds))
+		opt = append(opt, grpc.Creds(cred))
 	}
 
 	s := grpc.NewServer(opt...)

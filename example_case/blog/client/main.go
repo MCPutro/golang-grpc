@@ -4,11 +4,12 @@ import (
 	"context"
 	"go-grpc-example2/example_case/blog/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials())) // grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
