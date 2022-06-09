@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"go-grpc-example2/example_case/blog/helper"
 	"go-grpc-example2/example_case/blog/proto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -79,8 +80,45 @@ func (s *server) ReadBlog(ctx context.Context, id *proto.BlogId) (*proto.Blog, e
 }
 
 func (s *server) UpdateBlog(ctx context.Context, blog *proto.Blog) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	fmt.Println("update data mongo")
+
+	//getId
+	idFromHex, err := primitive.ObjectIDFromHex(blog.GetId())
+	if err != nil {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("cant parse id, error : %v", err),
+		)
+	}
+
+	//update data in mongodb
+	updateResult, err := s.Collection.UpdateOne(
+		ctx,
+		bson.M{"_id": idFromHex},
+		bson.M{"$set": &BlogItem{
+			AuthorID: blog.GetAuthorId(),
+			Title:    blog.GetTitle(),
+			Content:  blog.GetContent(),
+		}},
+	)
+
+	//logic if you got error when update data in mongoDB
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("failed update, error : %v", err),
+		)
+	}
+
+	//logic if id not found
+	if updateResult.MatchedCount == 0 {
+		return nil, status.Errorf(
+			codes.NotFound,
+			fmt.Sprintf("failed to found id %v, error : %v", idFromHex, err),
+		)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 func (s *server) DeleteBlog(ctx context.Context, id *proto.BlogId) (*emptypb.Empty, error) {
@@ -94,22 +132,16 @@ func (s *server) ListBlogs(empty *emptypb.Empty, blogsServer proto.BlogService_L
 }
 
 func main() {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://root:root@localhost:27017/"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	mongoDB, err := mongo.NewClient(options.Client().ApplyURI("mongodb://root:root@localhost:27017/"))
+	helper.PrintError(err)
 
-	err = client.Connect(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
+	err = mongoDB.Connect(context.Background())
+	helper.PrintError(err)
 
-	collection := client.Database("blogBD").Collection("blog")
+	collection := mongoDB.Database("blogBD").Collection("blog")
 
 	listen, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		panic(err)
-	}
+	helper.PrintError(err)
 
 	s := grpc.NewServer()
 
