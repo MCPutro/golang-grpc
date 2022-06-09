@@ -122,13 +122,75 @@ func (s *server) UpdateBlog(ctx context.Context, blog *proto.Blog) (*emptypb.Emp
 }
 
 func (s *server) DeleteBlog(ctx context.Context, id *proto.BlogId) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	fmt.Println("delete data mongo")
+
+	//get id
+	idFromHex, err := primitive.ObjectIDFromHex(id.GetId())
+	if err != nil {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("failed parse id %v, error : %v", id.GetId(), err),
+		)
+	}
+
+	//delete data mongo by id
+	deleteResult, err := s.Collection.DeleteOne(ctx, bson.M{"_id": idFromHex})
+
+	// error when delete
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("error : %v", err),
+		)
+	}
+
+	//if id not found
+	if deleteResult.DeletedCount == 0 {
+		return nil, status.Errorf(
+			codes.NotFound,
+			fmt.Sprintf("id %v not found", err),
+		)
+	}
+
+	return &emptypb.Empty{}, nil
+
 }
 
-func (s *server) ListBlogs(empty *emptypb.Empty, blogsServer proto.BlogService_ListBlogsServer) error {
-	//TODO implement me
-	panic("implement me")
+func (s *server) ListBlogs(empty *emptypb.Empty, serverStream proto.BlogService_ListBlogsServer) error {
+	log.Println("ListBlogs was invoked")
+
+	ctx := context.Background()
+	cur, err := s.Collection.Find(ctx, primitive.D{{}})
+	if err != nil {
+		return status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknown internal error: %v", err),
+		)
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		data := &BlogItem{}
+		err := cur.Decode(data)
+
+		if err != nil {
+			return status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error while decoding data from MongoDB: %v", err),
+			)
+		}
+
+		serverStream.Send(documentToBlog(data))
+	}
+
+	if err = cur.Err(); err != nil {
+		return status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknown internal error: %v", err),
+		)
+	}
+
+	return nil
 }
 
 func main() {

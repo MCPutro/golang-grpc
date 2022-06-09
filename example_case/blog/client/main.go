@@ -7,8 +7,53 @@ import (
 	"go-grpc-example2/example_case/blog/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"io"
 	"log"
+	"time"
 )
+
+func deleteBlog(c proto.BlogServiceClient, id string) {
+	fmt.Println("delete data with id ", id)
+
+	blogIdReq := &proto.BlogId{Id: id}
+
+	_, err := c.DeleteBlog(context.Background(), blogIdReq)
+
+	if err != nil {
+		log.Fatalf("error delete id %v, error : %v", id, err)
+	}
+
+	log.Print("complete delete id ", id)
+}
+
+func getList(c proto.BlogServiceClient) {
+	log.Println("---listBlog was invoked---")
+	stream, err := c.ListBlogs(context.Background(), &emptypb.Empty{})
+
+	if err != nil {
+		log.Fatalf("Error while calling ListBlogs: %v\n", err)
+	}
+
+	for {
+		res, err := stream.Recv()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalf("Something happened: %v\n", err)
+		}
+
+		log.Println(res)
+		for i := 1; i <= 100; i++ {
+			time.Sleep(10 * time.Millisecond)
+			fmt.Print("-")
+		}
+		fmt.Println(" OK")
+	}
+}
 
 func updateBlog(c proto.BlogServiceClient, id string) string {
 	log.Println("---updateBlog was invoked---")
@@ -77,4 +122,6 @@ func main() {
 	blogId := createBlog(client)
 	findById(client, blogId)
 	updateBlog(client, blogId)
+	getList(client)
+	deleteBlog(client, blogId)
 }
